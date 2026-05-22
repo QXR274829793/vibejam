@@ -7,15 +7,7 @@ class ArtLoader {
     artMap = new HashMap<String, Art>();
   }
 
-  void addArt(Art art) {
-    artMap.put(art.name, art);
-  }
-
-  Art getArt(String name) {
-    return artMap.get(name);
-  }
-
-  void loadEffectsFromCSV(String filePath) {
+  void loadArtsFromCSV(String filePath) {
     String[] lines = loadStrings(filePath);
     
     for (int i = 1; i < lines.length; i++) {
@@ -25,32 +17,56 @@ class ArtLoader {
       String[] parts = line.split(",");
       if (parts.length >= 3) {
         String artName = parts[0].trim();
-        String effectName = parts[1].trim();
-        String effectText = parts[2].trim();
+        int maxLevel = Integer.parseInt(parts[1].trim());
+        String[] levelNames = parts[2].trim().split(";");
         
-        Art art = artMap.get(artName);
-        Art effectArt = artMap.get(effectName);
+        ArtLevel[] levels = new ArtLevel[maxLevel];
+        for (int j = 0; j < Math.min(maxLevel, levelNames.length); j++) {
+          levels[j] = new ArtLevel(null, levelNames[j].trim());
+        }
         
-        if (art != null && effectArt != null) {
-          Art[] currentEffects = art.effects;
-          String[] currentTexts = art.effectText;
+        Art art = new Art(artName, levels);
+        artMap.put(artName, art);
+      }
+    }
+    
+    for (int i = 1; i < lines.length; i++) {
+      String line = lines[i].trim();
+      if (line.isEmpty()) continue;
+      
+      String[] parts = line.split(",");
+      if (parts.length >= 4 && !parts[3].trim().isEmpty()) {
+        String artName = parts[0].trim();
+        String[] prerequisiteNames = parts[3].trim().split(";");
+        String[] effectTexts = new String[0];
+        
+        if (parts.length >= 5 && !parts[4].trim().isEmpty()) {
+          effectTexts = parts[4].trim().split(";");
+        }
+        
+        Art targetArt = artMap.get(artName);
+        if (targetArt != null) {
+          Art[] prerequisites = new Art[prerequisiteNames.length];
+          String[] texts = new String[prerequisiteNames.length];
           
-          Art[] newEffects = new Art[currentEffects.length + 1];
-          String[] newTexts = new String[currentTexts.length + 1];
-          
-          for (int j = 0; j < currentEffects.length; j++) {
-            newEffects[j] = currentEffects[j];
-            newTexts[j] = currentTexts[j];
+          for (int j = 0; j < prerequisiteNames.length; j++) {
+            prerequisites[j] = artMap.get(prerequisiteNames[j].trim());
+            if (j < effectTexts.length) {
+              texts[j] = effectTexts[j].trim();
+            } else {
+              texts[j] = prerequisiteNames[j].trim() + " 启发了 " + artName;
+            }
           }
           
-          newEffects[currentEffects.length] = effectArt;
-          newTexts[currentTexts.length] = effectText;
-          
-          art.effects = newEffects;
-          art.effectText = newTexts;
+          targetArt.effects = prerequisites;
+          targetArt.effectText = texts;
         }
       }
     }
+  }
+
+  Art getArt(String name) {
+    return artMap.get(name);
   }
 
   Art[] getAllArts() {

@@ -36,14 +36,16 @@ class Art {
 
   void teach() {
     isTaught = true;
-    if (currentLevel < levels.length - 1) {
-      currentLevel++;
+    
+    if (currentLevel == 0 && levels.length > 1) {
+      currentLevel = 1;
     }
     
     for (int i = 0; i < effects.length; i++) {
       Art effectArt = effects[i];
-      if (effectArt.isTaught && !effectArt.isMaxLevel()) {
-        effectArt.upgrade();
+      if (effectArt.isTaught && effectArt.isMaxLevel() && !isMaxLevel()) {
+        upgrade();
+        println(name + " 因 " + effectArt.name + " 已达到最高等级而获得额外升级: " + effectText[i]);
       }
     }
   }
