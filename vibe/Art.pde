@@ -37,10 +37,6 @@ class Art {
   void teach() {
     isTaught = true;
     
-    if (currentLevel == 0 && levels.length > 1) {
-      currentLevel = 1;
-    }
-    
     for (int i = 0; i < effects.length; i++) {
       Art effectArt = effects[i];
       if (effectArt.isTaught && effectArt.isMaxLevel() && !isMaxLevel()) {

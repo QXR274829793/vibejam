@@ -22,7 +22,9 @@ class ArtLoader {
         
         ArtLevel[] levels = new ArtLevel[maxLevel];
         for (int j = 0; j < Math.min(maxLevel, levelNames.length); j++) {
-          levels[j] = new ArtLevel(null, levelNames[j].trim());
+          String imagePath = "data/" + artName + "/" + (j + 1) + ".png";
+          PImage img = loadImage(imagePath);
+          levels[j] = new ArtLevel(img, levelNames[j].trim());
         }
         
         Art art = new Art(artName, levels);
