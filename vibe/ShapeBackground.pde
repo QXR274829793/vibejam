@@ -7,6 +7,7 @@ class Shape {
   float life;
   float maxLife;
   float speed;
+  float moveX, moveY;
   color c;
   
   Shape(float w, float h) {
@@ -17,6 +18,8 @@ class Shape {
     life = 0;
     maxLife = random(120, 200);
     speed = random(0.01, 0.03);
+    moveX = random(-1, 1);
+    moveY = random(-1, 1);
     
     float hue = random(260, 300);
     c = color(hue, 180, 200);
@@ -24,6 +27,9 @@ class Shape {
   
   boolean update() {
     life += speed;
+    
+    x += moveX * 0.5;
+    y += moveY * 0.5;
     
     if (life >= 1) {
       life = 1;
@@ -44,7 +50,7 @@ class Shape {
     
     pushMatrix();
     translate(x, y);
-    rotate(life * TWO_PI);
+    rotate(life * TWO_PI / 3);
     scale(life);
     
     if (type == 0) {
@@ -67,10 +73,10 @@ class ShapeBackground {
   ShapeBackground(float w, float h) {
     width = w;
     height = h;
-    maxShapes = 20;
+    maxShapes = 60;
     shapes = new ArrayList<Shape>();
     
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 30; i++) {
       shapes.add(new Shape(width, height));
       shapes.get(i).life = random(1);
     }

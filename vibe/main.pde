@@ -116,7 +116,9 @@ void draw() {
   fill(255);
   textSize(14);
   textAlign(LEFT, TOP);
-  text("点击艺术形式进行传授！", 50, height - 30);
+  text("点击艺术形式进行传授！", 50, height - 60);
+  text("选择正确的顺序等级会更高", 50, height - 40);
+  text("挑战做出最厉害的游戏吧！", 50, height - 20);
 }
 
 void checkGameCompleted() {
